@@ -51,7 +51,9 @@ export const MusicPlayerWidget = () => {
   }, [volume])
 
   useEffect(() => {
-    if (isPlaying && audioRef.current) audioRef.current.play()
+    if (isPlaying && audioRef.current) {
+      audioRef.current.play().catch(() => setIsPlaying(false))
+    }
   }, [currentTrackIndex, isPlaying])
 
   const togglePlayPause = () => setIsPlaying(!isPlaying)
@@ -78,7 +80,11 @@ export const MusicPlayerWidget = () => {
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    isPlaying ? audio.play().catch(() => setIsPlaying(false)) : audio.pause()
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false))
+    } else {
+      audio.pause()
+    }
   }, [isPlaying])
 
   return (
