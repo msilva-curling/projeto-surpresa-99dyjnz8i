@@ -1,12 +1,5 @@
-import {
-  X,
-  Paintbrush,
-  SlidersHorizontal,
-  Palette,
-  Sparkles,
-} from 'lucide-react'
+import { SlidersHorizontal, Palette, Sparkles, Paintbrush } from 'lucide-react'
 import { useTheme } from '@/contexts/theme-provider'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
@@ -41,6 +34,18 @@ const backgroundOptions = [
   },
 ]
 
+const widgetOptions = [
+  { id: 'focus', name: 'Timer de Foco' },
+  { id: 'tasks', name: 'Minhas Tarefas' },
+  { id: 'weather', name: 'Clima' },
+  { id: 'quote', name: 'Citação do Dia' },
+  { id: 'calendar', name: 'Calendário' },
+  { id: 'mood', name: 'Humor Diário' },
+  { id: 'notes', name: 'Notas Rápidas' },
+  { id: 'habits', name: 'Rastreador de Hábitos' },
+  { id: 'music', name: 'Música Ambiente' },
+]
+
 export const SettingsPanel = () => {
   const {
     isSettingsOpen,
@@ -49,20 +54,21 @@ export const SettingsPanel = () => {
     setTheme,
     backgroundTheme,
     setBackgroundTheme,
+    visibleWidgets,
+    toggleWidget,
   } = useTheme()
 
   return (
     <Sheet open={isSettingsOpen} onOpenChange={setSettingsOpen}>
-      <SheetContent className="w-full sm:w-[400px] bg-white/90 dark:bg-black/90 backdrop-blur-xl border-l-0 sm:border-l">
+      <SheetContent className="w-full sm:w-[400px] bg-white/90 dark:bg-black/90 backdrop-blur-xl border-l-0 sm:border-l overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-2xl">
-            <SlidersHorizontal />
-            Configurações
+            <SlidersHorizontal /> Configurações
           </SheetTitle>
         </SheetHeader>
         <div className="py-6 space-y-8">
           <section className="space-y-4">
-            <h3 className="font-semibold text-lg">Temas e Plano de Fundo</h3>
+            <h3 className="font-semibold text-lg">Aparência</h3>
             <div className="space-y-2">
               <Label>Tema</Label>
               <RadioGroup
@@ -94,8 +100,7 @@ export const SettingsPanel = () => {
                     key={opt.id}
                     className="flex items-center gap-3 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
                   >
-                    <RadioGroupItem value={opt.id} />
-                    {opt.icon}
+                    <RadioGroupItem value={opt.id} /> {opt.icon}{' '}
                     <span>{opt.name}</span>
                   </Label>
                 ))}
@@ -105,18 +110,21 @@ export const SettingsPanel = () => {
           <Separator />
           <section className="space-y-4">
             <h3 className="font-semibold text-lg">Gerenciar Widgets</h3>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="tasks-widget">Minhas Tarefas</Label>
-              <Switch id="tasks-widget" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="weather-widget">Clima</Label>
-              <Switch id="weather-widget" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="notes-widget">Notas Rápidas</Label>
-              <Switch id="notes-widget" />
-            </div>
+            {widgetOptions.map((widget) => (
+              <div
+                key={widget.id}
+                className="flex items-center justify-between"
+              >
+                <Label htmlFor={`${widget.id}-widget-switch`}>
+                  {widget.name}
+                </Label>
+                <Switch
+                  id={`${widget.id}-widget-switch`}
+                  checked={visibleWidgets.includes(widget.id)}
+                  onCheckedChange={() => toggleWidget(widget.id)}
+                />
+              </div>
+            ))}
           </section>
         </div>
       </SheetContent>
